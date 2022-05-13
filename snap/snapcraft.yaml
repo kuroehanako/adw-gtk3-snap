@@ -1,15 +1,42 @@
-name: my-snap-name # you probably want to 'snapcraft register <name>'
-version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-summary: Single-line elevator pitch for your amazing snap # 79 char long summary
+name: adw-gtk3
+adopt-info: adw-gtk3-themes
+architectures:
+  - all
+summary: libadwaita ported to GTK 3 themes for GTK Snaps
 description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+  A snap that exports the adw-gtk3 themes.
 
-confinement: devmode # use 'strict' once you have the right plugs and slots
+base: core20
+grade: stable
+confinement: strict
 
+slots:
+  gtk-3-themes:
+    interface: content
+    source:
+      read:
+        - $SNAP/share/themes/adw-gtk3
+        - $SNAP/share/themes/adw-gtk3-dark
+        
 parts:
-  my-part:
-    # See 'snapcraft plugins'
+  # adw-gtk3 themes
+  adw-gtk3-themes:
+    after: [utils]
     plugin: nil
+    source: https://github.com/lassekongo83/adw-gtk3/releases/download/v1.8/adw-gtk3v1-8.tar.xz
+    override-build: |
+        snapcraftctl build
+        snapcraftctl set-version "$(git describe --tags 2>/dev/null || echo 1.0)"
+        mkdir -p $SNAPCRAFT_PART_INSTALL/share/themes
+        mv $SNAPCRAFT_PART_INSTALL/usr/share/themes/adw-* $SNAPCRAFT_PART_INSTALL/share/themes/
+    stage:
+      - share/themes/*/gtk-3*
+      
+  utils:
+    plugin: dump
+    source: utils
+    prime:
+      - -*
+    build-packages:
+      - try: [gtk-update-icon-cache]
+      - else: [libgtk-3-bin]
