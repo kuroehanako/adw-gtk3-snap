@@ -1,14 +1,15 @@
-name: adw-gtk3
-adopt-info: adw-gtk3-themes
+name: adw-gtk3-theme
+base: core20 # the base snap is the execution environment for this snap
+version: '1.0'
+summary: adw-gtk3 snap port.
 architectures:
-  - all
-summary: libadwaita ported to GTK 3 themes for GTK Snaps
+  - build-on: amd64
+    run-on: all
 description: |
-  A snap that exports the adw-gtk3 themes.
-
-base: core20
-grade: stable
-confinement: strict
+  adw-gtk3 theme is libadwaita theme for GTK3.
+  Port based on the theme ports from Genadi Naydenov (gantonayde).
+grade: stable # must be 'stable' to release into candidate/stable channels
+confinement: strict # use 'strict' once you have the right plugs and slots
 
 slots:
   gtk-3-themes:
